@@ -1,0 +1,39 @@
+services:
+  nginx:
+    build: ./requirements/nginx
+    restart: on-failure
+    networks: 
+      - app-net
+
+  wordpress:
+    build: ./requirements/wordpress
+    restart: on-failure
+    networks: 
+      - app-net
+
+  mariadb:
+    build: ./requirements/mariadb
+    restart: on-failure
+    networks: 
+      - app-net
+
+
+volumes:
+  wordpress-db:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/aechahid/data
+
+  wordpress-web-files:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/aechahid/data
+
+
+networks:
+  app-net:
+
