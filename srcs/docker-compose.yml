@@ -1,39 +1,81 @@
 services:
-  nginx:
-    build: ./requirements/nginx
+  mariadb:
+    build: ./requirements/mariadb
+    image: mariadb:1.0
+    container_name: mariadb
     restart: on-failure
-    networks: 
+    volumes:
+      - wp_db_data:/var/lib/mysql
+    networks:
       - app-net
+    secrets:
+      - db_password
+    environment:
+      - MARIADB_DATABASE
+      - MARIADB_USER
 
   wordpress:
     build: ./requirements/wordpress
+    image: wordpress:1.0
+    container_name: wordpress
     restart: on-failure
-    networks: 
+    volumes:
+      - wp_data:/var/www/html
+    networks:
       - app-net
+    secrets:
+      - db_password
+      - wp_admin_password
+      - wp_user_password
+    environment:
+      - MARIADB_DATABASE
+      - MARIADB_USER
+      - DOMAIN_NAME
+      - WP_TITLE
+      - WP_ADMIN_USER
+      - WP_ADMIN_EMAIL
+      - WP_USER
+      - WP_USER_EMAIL
 
-  mariadb:
-    build: ./requirements/mariadb
+  nginx:
+    build: ./requirements/nginx
+    image: nginx:1.0
+    container_name: nginx
     restart: on-failure
-    networks: 
+    networks:
       - app-net
-
+    volumes:
+    - wp_data:/var/www/html
+    environment:
+      - DOMAIN_NAME
+    ports:
+      - "443:443"
+    
 
 volumes:
-  wordpress-db:
+  wp_db_data:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: /home/aechahid/data
-
-  wordpress-web-files:
+      device: /home/aechahid/data/mariadb
+  wp_data:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: /home/aechahid/data
+      device: /home/aechahid/data/wordpress
 
 
 networks:
   app-net:
+
+
+secrets:
+  db_password:
+    file: ../secrets/db_password.txt
+  wp_admin_password:
+    file: ../secrets/wp_admin_password.txt
+  wp_user_password:
+    file: ../secrets/wp_user_password.txt
 
