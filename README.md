@@ -87,7 +87,7 @@ inception/
                 └── nginx-entrypoint.sh
 ```
 
-The secret files and `.env` file contain local configuration or confidential values and are not committed to Git.
+The `.env` file contains non-secret project configuration and is tracked in Git. Confidential values such as passwords are stored separately in secret files, which are ignored by Git.
 
 ---
 

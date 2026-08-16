@@ -93,12 +93,11 @@ Docker Compose mounts the required secret files inside containers under:
 /run/secrets/
 ```
 
-The secrets directory and `srcs/.env` must not be committed to Git.
+The `srcs/.env` file contains non-secret project configuration and is tracked in Git. Confidential values such as passwords are stored separately in the secrets directory, which is ignored by Git.
 
 The repository `.gitignore` should contain:
 
 ```text
-srcs/.env
 secrets/
 ```
 
